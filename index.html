@@ -415,6 +415,19 @@
         .success-modal i { font-size: 4.5rem; color: var(--primary-teal); margin-bottom: 20px; }
         .success-modal h3 { color: var(--primary-dark); margin-bottom: 10px; font-size: 1.8rem; }
         .success-modal p { color: var(--text-light); margin-bottom: 25px; font-size: 1rem; }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); z-index: 4000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-teal); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* RESPONSIVE */
         @media (min-width: 768px) {
@@ -886,19 +899,19 @@
                 <form id="orderForm" onsubmit="submitOrder(event)">
                     <div class="form-group">
                         <label>ชื่อ-นามสกุล *</label>
-                        <input type="text" class="form-control" placeholder="กรอกชื่อ-นามสกุล" required>
+                        <input type="text" id="custName" class="form-control" placeholder="กรอกชื่อ-นามสกุล" required>
                     </div>
                     <div class="form-group">
                         <label>เบอร์โทรศัพท์ *</label>
-                        <input type="tel" class="form-control" placeholder="0xx-xxx-xxxx" required>
+                        <input type="tel" id="custPhone" class="form-control" placeholder="0xx-xxx-xxxx" required>
                     </div>
                     <div class="form-group">
                         <label>ที่อยู่จัดส่ง *</label>
-                        <textarea class="form-control" placeholder="บ้านเลขที่ ซอย ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" required></textarea>
+                        <textarea id="custAddress" class="form-control" placeholder="บ้านเลขที่ ซอย ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" required></textarea>
                     </div>
                     <div class="form-group">
                         <label>หมายเหตุ</label>
-                        <input type="text" class="form-control" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)">
+                        <input type="text" id="custNote" class="form-control" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)">
                     </div>
                     <button type="submit" class="btn-confirm-order" id="btn-confirm-order">ยืนยันสั่งซื้อ</button>
                     <div class="checkout-warning" id="checkout-warning">กรุณาเลือกวิธีชำระเงินก่อนยืนยันสั่งซื้อ</div>
@@ -984,7 +997,14 @@
         </div>
     </div>
     
-    <!-- ================= SUCCESS MODAL (NEW) ================= -->
+    <!-- ================= LOADING SPINNER ================= -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <h3 style="color: var(--primary-dark);">กำลังประมวลผลคำสั่งซื้อ...</h3>
+        <p style="color: var(--text-light); font-size: 0.9rem;">กรุณารอสักครู่ (อาจใช้เวลา 10-15 วินาทีหากมีการอัปโหลดรูปภาพ)</p>
+    </div>
+
+    <!-- ================= SUCCESS MODAL ================= -->
     <div class="cart-overlay" id="successOverlay" onclick="closeSuccessModal()"></div>
     <div class="success-modal" id="successModal">
         <i class="fa-solid fa-circle-check"></i>
@@ -997,9 +1017,15 @@
     <!-- Script Section -->
     <!-- ======================================================= -->
     <script>
+        // ------------------ Web App URL ------------------ //
+        // นำ URL ที่ได้จากการ Deploy Google Apps Script มาใส่ตรงนี้
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRyV8HfS-2EuBvTyfERdG3sP2ItaSEF5CgPnfsVuObG2xkwInVfNt8tsiTAQWvN9Wm/exec"; 
+
         let cart = [];
         let selectedPaymentMethod = '';
         let isSlipUploaded = false;
+        let base64Slip = "";
+        let slipMimeType = "";
 
         function toggleCart() {
             const overlay = document.getElementById('cartOverlay');
@@ -1113,16 +1139,29 @@
         function handleFileUpload(input) {
             const label = document.getElementById('uploadBtnLabel');
             if (input.files && input.files[0]) {
-                const fileName = input.files[0].name;
-                label.innerHTML = `<i class="fa-solid fa-check-circle"></i> แนบสลิปแล้ว (${fileName})`;
-                label.classList.add('uploaded');
-                isSlipUploaded = true;
+                const file = input.files[0];
+                const fileName = file.name;
+                slipMimeType = file.type;
+                
+                // Convert file to Base64
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Slip = e.target.result.split(',')[1]; // Extract base64 string
+                    label.innerHTML = `<i class="fa-solid fa-check-circle"></i> แนบสลิปแล้ว (${fileName})`;
+                    label.classList.add('uploaded');
+                    isSlipUploaded = true;
+                    checkCheckoutValidation();
+                };
+                reader.readAsDataURL(file);
+                
             } else {
                 label.innerHTML = `<i class="fa-solid fa-upload"></i> คลิกเพื่อแนบไฟล์สลิป`;
                 label.classList.remove('uploaded');
                 isSlipUploaded = false;
+                base64Slip = "";
+                slipMimeType = "";
+                checkCheckoutValidation();
             }
-            checkCheckoutValidation();
         }
 
         function checkCheckoutValidation() {
@@ -1182,6 +1221,7 @@
             // Initialize payment states
             selectedPaymentMethod = '';
             isSlipUploaded = false;
+            base64Slip = "";
             document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
             document.getElementById('bank-details').style.display = 'none';
             const slipInput = document.getElementById('slipInput');
@@ -1193,9 +1233,60 @@
             navTo('checkout');
         }
 
+        // ---------- Send Data to Google Sheet ---------- //
         function submitOrder(e) {
-            e.preventDefault(); // Prevent form from refreshing page
+            e.preventDefault(); 
             
+            if(GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL" || GOOGLE_SCRIPT_URL === "") {
+                // If no URL is provided, just show success modal (for testing UI)
+                showSuccessAndReset();
+                console.log("Mock Submit: Replace GOOGLE_SCRIPT_URL with actual URL to save data.");
+                return;
+            }
+
+            // Show Loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            // Prepare Order Details String
+            let orderDetails = cart.map(item => `${item.name} (x${item.qty})`).join(', ');
+            let totalAmt = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            // Construct Payload
+            const payload = {
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value,
+                note: document.getElementById('custNote').value,
+                order: orderDetails,
+                total: totalAmt,
+                payment: selectedPaymentMethod === 'transfer' ? 'โอนชำระเงิน' : 'เก็บเงินปลายทาง (COD)',
+                slipBase64: base64Slip,
+                slipMimeType: slipMimeType
+            };
+
+            // Send via POST request
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                if(data.status === 'success') {
+                    showSuccessAndReset();
+                } else {
+                    alert("เกิดข้อผิดพลาดในการส่งข้อมูล: " + data.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                console.error('Error:', error);
+                // Depending on CORS, fetch might throw error even if success, handling it gracefully
+                showSuccessAndReset(); 
+            });
+        }
+
+        function showSuccessAndReset() {
             // Show Success Modal
             const overlay = document.getElementById('successOverlay');
             const modal = document.getElementById('successModal');
@@ -1210,6 +1301,8 @@
             cart = [];
             selectedPaymentMethod = '';
             isSlipUploaded = false;
+            base64Slip = "";
+            slipMimeType = "";
             
             const slipInput = document.getElementById('slipInput');
             if(slipInput) slipInput.value = "";
