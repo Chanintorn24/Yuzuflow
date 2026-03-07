@@ -265,8 +265,8 @@
         .price-card.best-seller .add-to-cart-btn { padding: 15px; font-size: 1.2rem; }
 
         /* 9. CHECKOUT SECTION */
-        .checkout-section { background: var(--bg-gray); padding: 60px 0; display: none; }
-        .checkout-container { max-width: 700px; margin: 0 auto; }
+        .checkout-page-wrapper { display: none; min-height: 80vh; padding-top: 100px; background: var(--bg-gray); padding-bottom: 60px; }
+        .checkout-container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
         .checkout-header { text-align: center; margin-bottom: 30px; }
         .checkout-header h2 { font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 10px; }
         .checkout-header p { color: var(--text-light); font-size: 1.1rem; }
@@ -276,11 +276,36 @@
         
         .summary-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
         .summary-item-info { display: flex; align-items: center; gap: 15px; }
-        .summary-item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: contain; background: #f9f9f9; padding: 5px; }
+        .summary-item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: contain; background: #f9f9f9; padding: 5px; flex-shrink: 0; }
         .summary-item-name { font-weight: 500; font-size: 1rem; color: var(--text-main); }
-        .summary-item-price { font-weight: 700; color: var(--primary-teal); }
+        .summary-item-price { font-weight: 700; color: var(--primary-teal); white-space: nowrap; }
         .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 700; color: var(--primary-dark); margin-top: 10px; }
-        .summary-payment-method { font-size: 0.95rem; color: var(--text-light); margin-top: 5px; }
+
+        /* Payment Options inside Checkout */
+        .payment-option {
+            border: 2px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 12px;
+            cursor: pointer; transition: var(--transition); display: flex; flex-direction: column;
+        }
+        .payment-option.selected { border-color: var(--primary-teal); background: rgba(29, 142, 135, 0.03); }
+        .payment-opt-header { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.05rem; }
+        .payment-opt-header i { color: var(--primary-teal); font-size: 1.2rem; }
+        .payment-opt-desc { font-size: 0.9rem; color: var(--text-light); margin-top: 5px; margin-left: 32px; }
+        .promo-tag-small { background: #fff3e0; color: var(--accent-orange); font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; font-weight: bold; border: 1px solid #ffe0b2;}
+
+        .bank-details-box {
+            background: #f0f9f8; border: 1px solid #cce8e6; border-radius: 10px; padding: 15px;
+            margin-top: 15px; display: none;
+        }
+        .bank-details-box h5 { font-size: 0.95rem; margin-bottom: 10px; color: var(--primary-dark); }
+        .bank-details-box p { font-size: 0.9rem; margin-bottom: 5px; color: var(--text-main); }
+        .upload-slip-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 12px; margin-top: 15px; border: 1px dashed var(--primary-teal);
+            background: white; color: var(--primary-teal); border-radius: 8px;
+            cursor: pointer; font-weight: 600; transition: var(--transition);
+        }
+        .upload-slip-btn:hover { background: #e6f7f5; }
+        .upload-slip-btn.uploaded { background: var(--primary-teal); color: white; border-style: solid; }
 
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
@@ -294,7 +319,9 @@
             cursor: pointer; transition: var(--transition); box-shadow: 0 5px 15px rgba(245, 166, 35, 0.3);
             margin-top: 10px;
         }
-        .btn-confirm-order:hover { background: var(--accent-orange-hover); transform: translateY(-2px); }
+        .btn-confirm-order:hover:not(:disabled) { background: var(--accent-orange-hover); transform: translateY(-2px); }
+        .btn-confirm-order:disabled { opacity: 0.5; cursor: not-allowed; }
+        .checkout-warning { text-align: center; color: #ef4444; font-size: 0.9rem; margin-top: 15px; display: none; font-weight: 500; }
 
         /* 10. CONTACT SECTION */
         .contact-section { background: var(--bg-gradient); padding: 80px 0; }
@@ -346,10 +373,11 @@
         .close-cart { background: none; border: none; color: #999; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
         .close-cart:hover { color: var(--text-main); }
         
-        .cart-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        .cart-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; }
+        .cart-items-wrapper { flex-grow: 1; }
         
         .cart-item { background: white; display: flex; align-items: center; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
-        .cart-item-img { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; background: #f9f9f9; border-radius: 8px; padding: 5px;}
+        .cart-item-img { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; background: #f9f9f9; border-radius: 8px; padding: 5px; flex-shrink: 0;}
         .cart-item-details { flex-grow: 1; }
         .cart-item-title { font-weight: 600; font-size: 1rem; color: var(--text-main); margin-bottom: 3px; }
         .cart-item-desc { font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; }
@@ -362,49 +390,33 @@
         .cart-item-price { position: absolute; right: 15px; top: 15px; font-weight: 700; color: var(--primary-teal); font-size: 1.1rem;}
         .cart-item-remove { position: absolute; right: 15px; bottom: 15px; color: #ccc; cursor: pointer; font-size: 1.1rem; transition: 0.2s;}
         .cart-item-remove:hover { color: #ef4444; }
-
-        .payment-section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .payment-section-title { font-weight: 700; margin-bottom: 15px; font-size: 1.1rem; color: var(--text-main); }
         
-        .payment-option {
-            border: 2px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 12px;
-            cursor: pointer; transition: var(--transition); display: flex; flex-direction: column;
-        }
-        .payment-option.selected { border-color: var(--primary-teal); background: rgba(29, 142, 135, 0.03); }
-        .payment-opt-header { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.05rem; }
-        .payment-opt-header i { color: var(--primary-teal); font-size: 1.2rem; }
-        .payment-opt-desc { font-size: 0.9rem; color: var(--text-light); margin-top: 5px; margin-left: 32px; }
-        .promo-tag-small { background: #fff3e0; color: var(--accent-orange); font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; font-weight: bold; border: 1px solid #ffe0b2;}
-
-        .bank-details-box {
-            background: #f0f9f8; border: 1px solid #cce8e6; border-radius: 10px; padding: 15px;
-            margin-top: 15px; display: none;
-        }
-        .bank-details-box h5 { font-size: 0.95rem; margin-bottom: 10px; color: var(--primary-dark); }
-        .bank-details-box p { font-size: 0.9rem; margin-bottom: 5px; color: var(--text-main); }
-        .upload-slip-btn {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; padding: 12px; margin-top: 15px; border: 1px dashed var(--primary-teal);
-            background: white; color: var(--primary-teal); border-radius: 8px;
-            cursor: pointer; font-weight: 600; transition: var(--transition);
-        }
-        .upload-slip-btn:hover { background: #e6f7f5; }
-        .upload-slip-btn.uploaded { background: var(--primary-teal); color: white; border-style: solid; }
+        .btn-clear-cart { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; text-decoration: underline; margin-top: 10px; align-self: flex-start; }
 
         .cart-footer { padding: 20px; background: white; border-top: 1px solid #eee; }
         .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: var(--text-main); }
         .cart-total span:last-child { color: var(--primary-teal); font-size: 1.4rem;}
         
-        .btn-proceed-checkout { 
+        .btn-go-checkout { 
             width: 100%; padding: 15px; background: var(--accent-orange); color: white; 
             border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; 
             transition: var(--transition);
         }
-        .btn-proceed-checkout:hover:not(:disabled) { background: var(--accent-orange-hover); }
-        .btn-proceed-checkout:disabled { opacity: 0.5; cursor: not-allowed; }
-        .payment-warning { text-align: center; color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none; }
+        .btn-go-checkout:hover:not(:disabled) { background: var(--accent-orange-hover); }
+        .btn-go-checkout:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ================= MOBILE RESPONSIVE (UPDATED) ================= */
+        /* Custom Success Modal */
+        .success-modal {
+            background: white; border-radius: 20px; padding: 40px 30px; text-align: center;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 3000; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 90%; max-width: 400px; display: none;
+        }
+        .success-modal i { font-size: 4.5rem; color: var(--primary-teal); margin-bottom: 20px; }
+        .success-modal h3 { color: var(--primary-dark); margin-bottom: 10px; font-size: 1.8rem; }
+        .success-modal p { color: var(--text-light); margin-bottom: 25px; font-size: 1rem; }
+
+        /* RESPONSIVE */
         @media (min-width: 768px) {
             .nav-menu { display: flex; }
         }
@@ -439,23 +451,10 @@
             
             .pricing-grid { flex-direction: column; margin-top: 20px; }
             
-            /* Responsive Pricing Cards */
-            .price-card { 
-                transform: scale(1); 
-                width: 100%; 
-                max-width: 100%; 
-                padding: 20px; 
-                margin-bottom: 15px; 
-            }
+            .price-card { transform: scale(1); width: 100%; max-width: 350px; padding: 20px; margin-bottom: 15px; }
             .price-card:hover { transform: translateY(-3px); }
             
-            .price-card.best-seller { 
-                transform: scale(1); 
-                width: 100%; 
-                max-width: 100%; 
-                margin: 0 0 15px 0; 
-                padding: 40px 20px 20px; 
-            }
+            .price-card.best-seller { transform: scale(1); width: 100%; max-width: 350px; margin: 0 0 15px 0; padding: 40px 20px 20px; }
             .price-card.best-seller:hover { transform: translateY(-3px); }
             
             .thumbnail { width: 60px; height: 45px; }
@@ -472,7 +471,6 @@
             .checkout-card { padding: 20px; }
             .summary-item-name { font-size: 0.9rem; }
             
-            /* Full Width Cart on Mobile */
             .cart-modal { right: -100%; width: 100%; max-width: 100%; }
         }
     </style>
@@ -820,55 +818,97 @@
                 </div>
             </div>
         </section>
+    </div> <!-- End of home-page wrapper -->
 
-        <!-- ================= 9. CHECKOUT SECTION ================= -->
-        <section class="checkout-section" id="checkout-section">
-            <div class="container checkout-container">
-                <div class="checkout-header">
-                    <h2>กรอกข้อมูลสั่งซื้อ</h2>
-                    <p>กรอกชื่อและที่อยู่จัดส่ง เราจะติดต่อกลับเพื่อยืนยันออเดอร์</p>
+    <!-- ================= CHECKOUT PAGE ================= -->
+    <div id="checkout-page" class="checkout-page-wrapper">
+        <div class="checkout-container">
+            <div class="checkout-header">
+                <h2>กรอกข้อมูลสั่งซื้อ</h2>
+                <p>ตรวจสอบรายการสินค้า และกรอกข้อมูลจัดส่งให้ครบถ้วน</p>
+            </div>
+
+            <!-- สรุปรายการสั่งซื้อ -->
+            <div class="checkout-card">
+                <div class="checkout-card-title"><i class="fa-solid fa-basket-shopping"></i> สรุปรายการสั่งซื้อ</div>
+                <div id="checkoutItemsContainer">
+                    <!-- Checkout items will be injected here -->
                 </div>
-
-                <!-- สรุปรายการสั่งซื้อ -->
-                <div class="checkout-card">
-                    <div class="checkout-card-title">สรุปรายการสั่งซื้อ</div>
-                    <div id="checkoutItemsContainer">
-                        <!-- Checkout items will be injected here -->
-                    </div>
-                    <div class="summary-total">
-                        <span>รวมทั้งหมด</span>
-                        <span id="checkoutTotalPrice">฿0</span>
-                    </div>
-                    <div class="summary-payment-method" id="checkoutPaymentMethodText">
-                        การชำระเงิน: 
-                    </div>
-                </div>
-
-                <!-- ฟอร์มข้อมูลลูกค้า -->
-                <div class="checkout-card">
-                    <form onsubmit="submitOrder(event)">
-                        <div class="form-group">
-                            <label>ชื่อ-นามสกุล *</label>
-                            <input type="text" class="form-control" placeholder="กรอกชื่อ-นามสกุล" required>
-                        </div>
-                        <div class="form-group">
-                            <label>เบอร์โทรศัพท์ *</label>
-                            <input type="tel" class="form-control" placeholder="0xx-xxx-xxxx" required>
-                        </div>
-                        <div class="form-group">
-                            <label>ที่อยู่จัดส่ง *</label>
-                            <textarea class="form-control" placeholder="บ้านเลขที่ ซอย ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>หมายเหตุ</label>
-                            <input type="text" class="form-control" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)">
-                        </div>
-                        <button type="submit" class="btn-confirm-order">ยืนยันสั่งซื้อ</button>
-                    </form>
+                <div class="summary-total">
+                    <span>ยอดรวมที่ต้องชำระ</span>
+                    <span id="checkoutTotalPrice">฿0</span>
                 </div>
             </div>
-        </section>
-    </div> <!-- End of home-page wrapper -->
+
+            <!-- เลือกการชำระเงิน -->
+            <div class="checkout-card">
+                <div class="checkout-card-title"><i class="fa-solid fa-wallet"></i> เลือกวิธีการชำระเงิน</div>
+                
+                <!-- โอนเงิน -->
+                <div class="payment-option" id="pay-transfer" onclick="selectPayment('transfer')">
+                    <div class="payment-opt-header">
+                        <i class="fa-solid fa-credit-card"></i> 
+                        <span>โอนชำระเงิน</span>
+                        <span class="promo-tag-small"><i class="fa-solid fa-gift"></i> รับของแถมฟรี 1 ซอง!</span>
+                    </div>
+                    <div class="payment-opt-desc">โอนเงินผ่านบัญชีธนาคาร</div>
+                    
+                    <!-- ข้อมูลธนาคาร -->
+                    <div class="bank-details-box" id="bank-details">
+                        <h5>ข้อมูลบัญชีธนาคาร</h5>
+                        <p><strong>ธนาคาร:</strong> กสิกรไทย</p>
+                        <p><strong>เลขบัญชี:</strong> 012-3-45678-9</p>
+                        <p><strong>ชื่อบัญชี:</strong> บริษัท ไฟเบอร์เจลลี่ จำกัด</p>
+                        
+                        <div style="margin-top: 15px;">
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">แนบสลิปโอนเงิน</span>
+                            <input type="file" id="slipInput" style="display: none;" accept="image/*" onchange="handleFileUpload(this)">
+                            <label for="slipInput" class="upload-slip-btn" id="uploadBtnLabel">
+                                <i class="fa-solid fa-upload"></i> คลิกเพื่อแนบไฟล์สลิป
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- เก็บเงินปลายทาง -->
+                <div class="payment-option" id="pay-cod" onclick="selectPayment('cod')">
+                    <div class="payment-opt-header">
+                        <i class="fa-solid fa-truck-fast"></i> 
+                        <span>เก็บเงินปลายทาง (COD)</span>
+                    </div>
+                    <div class="payment-opt-desc">ชำระเงินเมื่อพนักงานจัดส่งสินค้าถึงหน้าบ้าน</div>
+                </div>
+            </div>
+
+            <!-- ฟอร์มข้อมูลลูกค้า -->
+            <div class="checkout-card">
+                <div class="checkout-card-title"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลผู้รับและที่อยู่จัดส่ง</div>
+                <form id="orderForm" onsubmit="submitOrder(event)">
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล *</label>
+                        <input type="text" class="form-control" placeholder="กรอกชื่อ-นามสกุล" required>
+                    </div>
+                    <div class="form-group">
+                        <label>เบอร์โทรศัพท์ *</label>
+                        <input type="tel" class="form-control" placeholder="0xx-xxx-xxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ที่อยู่จัดส่ง *</label>
+                        <textarea class="form-control" placeholder="บ้านเลขที่ ซอย ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>หมายเหตุ</label>
+                        <input type="text" class="form-control" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)">
+                    </div>
+                    <button type="submit" class="btn-confirm-order" id="btn-confirm-order">ยืนยันสั่งซื้อ</button>
+                    <div class="checkout-warning" id="checkout-warning">กรุณาเลือกวิธีชำระเงินก่อนยืนยันสั่งซื้อ</div>
+                </form>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="#" onclick="navTo('home'); toggleCart(); return false;" style="color: var(--text-light); text-decoration: underline; font-size: 0.9rem;"><i class="fa-solid fa-arrow-left"></i> กลับไปแก้ไขตะกร้าสินค้า</a>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of checkout-page wrapper -->
 
     <!-- ================= CONTACT PAGE ================= -->
     <div id="contact-page" style="display: none; min-height: 80vh;">
@@ -928,52 +968,11 @@
             <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-times"></i></button>
         </div>
         
-        <div class="cart-body">
-            <div id="cartItemsContainer">
+        <div class="cart-body" style="display: flex; flex-direction: column;">
+            <div id="cartItemsContainer" class="cart-items-wrapper">
                 <p style="text-align:center; color:#999; margin-top:20px;">ตะกร้าสินค้าว่างเปล่า</p>
             </div>
-
-            <!-- ส่วนเลือกการชำระเงิน -->
-            <div id="paymentSelectionContainer" style="display: none;">
-                <div class="payment-section">
-                    <div class="payment-section-title">เลือกการชำระเงิน</div>
-                    
-                    <!-- โอนเงิน -->
-                    <div class="payment-option" id="pay-transfer" onclick="selectPayment('transfer')">
-                        <div class="payment-opt-header">
-                            <i class="fa-solid fa-credit-card"></i> 
-                            <span>โอนชำระเงิน</span>
-                            <span class="promo-tag-small"><i class="fa-solid fa-gift"></i> รับของแถมฟรี 1 ซอง!</span>
-                        </div>
-                        <div class="payment-opt-desc">โอนเงินผ่านบัญชีธนาคาร</div>
-                        
-                        <!-- ข้อมูลธนาคาร -->
-                        <div class="bank-details-box" id="bank-details">
-                            <h5>ข้อมูลบัญชีธนาคาร</h5>
-                            <p><strong>ธนาคาร:</strong> กสิกรไทย</p>
-                            <p><strong>เลขบัญชี:</strong> 012-3-45678-9</p>
-                            <p><strong>ชื่อบัญชี:</strong> บริษัท ไฟเบอร์เจลลี่ จำกัด</p>
-                            
-                            <div style="margin-top: 15px;">
-                                <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">แนบสลิปโอนเงิน</span>
-                                <input type="file" id="slipInput" style="display: none;" accept="image/*" onchange="handleFileUpload(this)">
-                                <label for="slipInput" class="upload-slip-btn" id="uploadBtnLabel">
-                                    <i class="fa-solid fa-upload"></i> คลิกเพื่อแนบไฟล์สลิป
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- เก็บเงินปลายทาง -->
-                    <div class="payment-option" id="pay-cod" onclick="selectPayment('cod')">
-                        <div class="payment-opt-header">
-                            <i class="fa-solid fa-truck-fast"></i> 
-                            <span>เก็บเงินปลายทาง (COD)</span>
-                        </div>
-                        <div class="payment-opt-desc">ชำระเงินเมื่อได้รับสินค้า</div>
-                    </div>
-                </div>
-            </div>
+            <button class="btn-clear-cart" id="btnClearCart" onclick="clearCart()" style="display: none;"><i class="fa-solid fa-trash-can"></i> ลบตะกร้าสินค้าทั้งหมด</button>
         </div>
 
         <div class="cart-footer">
@@ -981,12 +980,22 @@
                 <span>รวมทั้งหมด</span>
                 <span id="cartTotalPrice">฿0</span>
             </div>
-            <button class="btn-proceed-checkout" id="btn-proceed-checkout" onclick="proceedToCheckout()" disabled>ดำเนินการสั่งซื้อ</button>
-            <div class="payment-warning" id="payment-warning">กรุณาเลือกวิธีชำระเงินก่อนดำเนินการ</div>
+            <button class="btn-go-checkout" id="btn-go-checkout" onclick="proceedToCheckout()" disabled>ดำเนินการสั่งซื้อ</button>
         </div>
     </div>
+    
+    <!-- ================= SUCCESS MODAL (NEW) ================= -->
+    <div class="cart-overlay" id="successOverlay" onclick="closeSuccessModal()"></div>
+    <div class="success-modal" id="successModal">
+        <i class="fa-solid fa-circle-check"></i>
+        <h3>สั่งซื้อสำเร็จ!</h3>
+        <p>ทางเราได้รับข้อมูลของคุณเรียบร้อยแล้ว จะรีบจัดส่งสินค้าโดยเร็วที่สุดครับ</p>
+        <button class="btn-primary" onclick="closeSuccessModal()" style="width: 100%; border-radius: 10px;">กลับสู่หน้าหลัก</button>
+    </div>
 
-
+    <!-- ======================================================= -->
+    <!-- Script Section -->
+    <!-- ======================================================= -->
     <script>
         let cart = [];
         let selectedPaymentMethod = '';
@@ -1028,11 +1037,17 @@
             updateCartUI();
         }
 
+        function clearCart() {
+            cart = [];
+            updateCartUI();
+        }
+
         function updateCartUI() {
             const container = document.getElementById('cartItemsContainer');
-            const paymentContainer = document.getElementById('paymentSelectionContainer');
             const badge = document.getElementById('cart-badge');
             const totalPriceEl = document.getElementById('cartTotalPrice');
+            const btnClearCart = document.getElementById('btnClearCart');
+            const btnGoCheckout = document.getElementById('btn-go-checkout');
             
             container.innerHTML = '';
             let total = 0;
@@ -1040,17 +1055,12 @@
 
             if (cart.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">ตะกร้าสินค้าว่างเปล่า</p>';
-                paymentContainer.style.display = 'none';
                 badge.innerText = '0';
                 totalPriceEl.innerText = '฿0';
-                selectedPaymentMethod = '';
-                document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
-                document.getElementById('bank-details').style.display = 'none';
-                checkCheckoutButton();
+                if(btnClearCart) btnClearCart.style.display = 'none';
+                if(btnGoCheckout) btnGoCheckout.disabled = true;
                 return;
             }
-
-            paymentContainer.style.display = 'block';
 
             cart.forEach((item, index) => {
                 total += item.price * item.qty;
@@ -1077,7 +1087,8 @@
 
             badge.innerText = totalItems;
             totalPriceEl.innerText = '฿' + total.toLocaleString();
-            checkCheckoutButton();
+            if(btnClearCart) btnClearCart.style.display = 'block';
+            if(btnGoCheckout) btnGoCheckout.disabled = false;
         }
 
         // ------------------ Payment Logic ------------------ //
@@ -1096,7 +1107,7 @@
                 document.getElementById('bank-details').style.display = 'none';
             }
 
-            checkCheckoutButton();
+            checkCheckoutValidation();
         }
 
         function handleFileUpload(input) {
@@ -1111,12 +1122,12 @@
                 label.classList.remove('uploaded');
                 isSlipUploaded = false;
             }
-            checkCheckoutButton();
+            checkCheckoutValidation();
         }
 
-        function checkCheckoutButton() {
-            const btn = document.getElementById('btn-proceed-checkout');
-            const warn = document.getElementById('payment-warning');
+        function checkCheckoutValidation() {
+            const btn = document.getElementById('btn-confirm-order');
+            const warn = document.getElementById('checkout-warning');
             
             if (cart.length === 0) {
                 btn.disabled = true;
@@ -1126,11 +1137,11 @@
 
             if (!selectedPaymentMethod) {
                 btn.disabled = true;
-                warn.innerText = 'กรุณาเลือกวิธีชำระเงินก่อนดำเนินการ';
+                warn.innerText = 'กรุณาเลือกวิธีชำระเงินก่อนยืนยันสั่งซื้อ';
                 warn.style.display = 'block';
             } else if (selectedPaymentMethod === 'transfer' && !isSlipUploaded) {
                 btn.disabled = true;
-                warn.innerText = 'กรุณาแนบสลิปโอนเงินก่อนดำเนินการสั่งซื้อ';
+                warn.innerText = 'กรุณาแนบสลิปโอนเงินก่อนยืนยันสั่งซื้อ';
                 warn.style.display = 'block';
             } else {
                 btn.disabled = false;
@@ -1141,12 +1152,13 @@
         // ------------------ Checkout Logic ------------------ //
 
         function proceedToCheckout() {
+            if(cart.length === 0) return;
+            
             toggleCart(); // close cart
             
             // Prepare Checkout Summary UI
             const chkContainer = document.getElementById('checkoutItemsContainer');
             const chkTotal = document.getElementById('checkoutTotalPrice');
-            const chkMethod = document.getElementById('checkoutPaymentMethodText');
             
             chkContainer.innerHTML = '';
             let total = 0;
@@ -1157,7 +1169,7 @@
                     <div class="summary-item">
                         <div class="summary-item-info">
                             <img src="${item.img}" class="summary-item-img">
-                            <span class="summary-item-name">${item.name} x${item.qty}</span>
+                            <span class="summary-item-name">${item.name} <br> <span style="font-size:0.85rem; color:#888;">${item.desc} (x${item.qty})</span></span>
                         </div>
                         <div class="summary-item-price">฿${(item.price * item.qty).toLocaleString()}</div>
                     </div>
@@ -1167,21 +1179,33 @@
             
             chkTotal.innerText = '฿' + total.toLocaleString();
             
-            let paymentText = selectedPaymentMethod === 'transfer' ? 'โอนชำระเงิน (แนบสลิปแล้ว)' : 'เก็บเงินปลายทาง (COD)';
-            chkMethod.innerText = 'การชำระเงิน: ' + paymentText;
+            // Initialize payment states
+            selectedPaymentMethod = '';
+            isSlipUploaded = false;
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('bank-details').style.display = 'none';
+            const slipInput = document.getElementById('slipInput');
+            if(slipInput) slipInput.value = "";
+            handleFileUpload(slipInput); 
+            checkCheckoutValidation();
 
-            // Show section and scroll
-            const checkoutSec = document.getElementById('checkout-section');
-            checkoutSec.style.display = 'block';
-            setTimeout(() => {
-                checkoutSec.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            // Navigate to checkout page
+            navTo('checkout');
         }
 
         function submitOrder(e) {
             e.preventDefault(); // Prevent form from refreshing page
-            alert("✅ สั่งซื้อสำเร็จ! ทางเราได้รับข้อมูลของคุณเรียบร้อยแล้ว จะรีบจัดส่งสินค้าโดยเร็วที่สุดครับ");
             
+            // Show Success Modal
+            const overlay = document.getElementById('successOverlay');
+            const modal = document.getElementById('successModal');
+            
+            if (overlay && modal) {
+                overlay.style.display = 'block';
+                setTimeout(() => overlay.style.opacity = '1', 10);
+                modal.style.display = 'block';
+            }
+
             // Reset everything
             cart = [];
             selectedPaymentMethod = '';
@@ -1189,13 +1213,25 @@
             
             const slipInput = document.getElementById('slipInput');
             if(slipInput) slipInput.value = "";
-            
             handleFileUpload(slipInput); 
             
             updateCartUI();
             
-            // Hide checkout and reset to home
-            document.getElementById('checkout-section').style.display = 'none';
+            const orderForm = document.getElementById('orderForm');
+            if (orderForm) orderForm.reset();
+        }
+
+        function closeSuccessModal() {
+            const overlay = document.getElementById('successOverlay');
+            const modal = document.getElementById('successModal');
+            
+            if (overlay && modal) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    modal.style.display = 'none';
+                }, 300);
+            }
             navTo('home');
         }
 
@@ -1203,18 +1239,25 @@
         function navTo(target) {
             const homePage = document.getElementById('home-page');
             const contactPage = document.getElementById('contact-page');
+            const checkoutPage = document.getElementById('checkout-page');
             
+            // Hide all pages first
+            if(homePage) homePage.style.display = 'none';
+            if(contactPage) contactPage.style.display = 'none';
+            if(checkoutPage) checkoutPage.style.display = 'none';
+
             if (target === 'contact') {
-                homePage.style.display = 'none';
-                contactPage.style.display = 'block';
+                if(contactPage) contactPage.style.display = 'block';
+                window.scrollTo(0, 0);
+            } else if (target === 'checkout') {
+                if(checkoutPage) checkoutPage.style.display = 'block';
                 window.scrollTo(0, 0);
             } else if (target === 'home') {
-                homePage.style.display = 'block';
-                contactPage.style.display = 'none';
+                if(homePage) homePage.style.display = 'block';
                 window.scrollTo(0, 0);
             } else {
-                homePage.style.display = 'block';
-                contactPage.style.display = 'none';
+                // For anchor links within home page
+                if(homePage) homePage.style.display = 'block';
                 const el = document.getElementById(target);
                 if (el) {
                     el.scrollIntoView({ behavior: 'smooth' });
@@ -1241,14 +1284,16 @@
             const nextThumb = thumbnails[currentGalleryIndex];
             
             const mainImage = document.getElementById('mainGalleryImage');
-            mainImage.style.opacity = 0;
-            setTimeout(() => {
-                mainImage.src = nextThumb.src;
-                mainImage.style.opacity = 1;
-            }, 150);
+            if (mainImage) {
+                mainImage.style.opacity = 0;
+                setTimeout(() => {
+                    mainImage.src = nextThumb.src;
+                    mainImage.style.opacity = 1;
+                }, 150);
+            }
 
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
-            nextThumb.classList.add('active');
+            if(nextThumb) nextThumb.classList.add('active');
         }
 
         // ฟังก์ชันเปลี่ยนรูปในแกลลอรี่ (เมื่อคลิกเลือกเอง)
@@ -1256,6 +1301,8 @@
             const mainImage = document.getElementById('mainGalleryImage');
             const thumbnails = document.querySelectorAll('.thumbnail');
             
+            if(!mainImage) return;
+
             // อัปเดตตำแหน่ง Index ปัจจุบันตามรูปที่ถูกคลิก
             thumbnails.forEach((thumb, index) => {
                 if (thumb === element) currentGalleryIndex = index;
@@ -1270,7 +1317,7 @@
 
             // อัปเดตสถานะ Active บน Thumbnail
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
-            element.classList.add('active');
+            if(element) element.classList.add('active');
             
             // เริ่มนับเวลาสไลด์อัตโนมัติใหม่เมื่อมีการคลิก
             startGallerySlider();
